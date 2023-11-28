@@ -1,7 +1,7 @@
 - name: Install docker-compose requirements
   become: true
   ansible.builtin.pip:
-    name: {{ item }}
+    name: "{{ item }}"
   with_items:
     - docker
     - docker-composer-v2
@@ -29,8 +29,6 @@
     mode: '0644'
 
 - name: Start service
-  ansible.builtin.shell:
-    cmd: docker compose up
-  args:
-    chdir: /var/www/flask
+  community.docker.docker_compose:
+    project_src: /var/www/flask
     build: true
