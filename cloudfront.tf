@@ -1,5 +1,5 @@
 resource "aws_cloudfront_origin_access_control" "cloudfront_oac" {
-  name                              = "CloudFrontOAC"
+  name                              = "${var.env_environment}CloudFrontOAC"
   description                       = "OAC Policy for CloudFront"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"

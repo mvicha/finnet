@@ -1,4 +1,4 @@
-env_environment       = "prod"
+env_environment       = "staging"
 
 buckets = {
   auth = {
