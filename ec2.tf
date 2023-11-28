@@ -19,7 +19,7 @@ data "template_file" "ssh_priv_key" {
 }
 
 resource "aws_ebs_volume" "this_ebs" {
-  for_each = ["dev", "staging"]
+  for_each = toset(["dev", "staging"])
 
   availability_zone = var.subnet[each.value].availability_zone
   size              = 5
@@ -42,7 +42,7 @@ resource "aws_instance" "this_instance" {
 }
 
 resource "aws_volume_attachment" "this_attachment" {
-  for_each = ["dev", "staging"]
+  for_each = toset(["dev", "staging"])
 
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.this_ebs[each.value].id

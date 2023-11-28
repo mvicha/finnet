@@ -93,24 +93,3 @@ instances = {
     user_data     = false
   }
 }
-
-ansible = {
-  dev = {
-    env       = "dev"
-    Tunning   = true
-    debug     = true
-    exturl    = "https://dev/approve"
-    client    = "dev_client_external"
-    intmode   = "API"
-    device_id = 2346456
-  }
-  staging = {
-    env       = "staging"
-    Tunning   = true
-    debug     = false
-    exturl    = "https://staging/approve"
-    client    = "staging_client_external"
-    intmode   = "API"
-    device_id = 32443532
-  }
-}

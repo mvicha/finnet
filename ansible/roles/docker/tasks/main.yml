@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     update_cache: yes
 
-- name: Install Docker
+- name: Remove Docker
   become: true
   ansible.builtin.apt:
     purge: yes

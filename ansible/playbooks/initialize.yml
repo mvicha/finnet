@@ -1,10 +1,6 @@
 - hosts: all
   gather_facts: true
-  # vars:
-  #   action_mode: initialize
   roles:
-    # - role: initialize/basic
-    #   tags: [ basic ]
     - basic
     - docker
     - compose

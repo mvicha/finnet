@@ -1,30 +1,19 @@
-# - name: Make sure data disk is available
-#   become: true
-#   ansible.builtin.filesystem:
-#     fstype: ext4
-#     dev: /dev/sdh
-#     force: false
-#     state: present
-
 - name: Find if disk is formatted
   become: true
   ansible.builtin.shell:
-    cmd: "lsblk -o NAME,FSTYPE -dsn | egrep -v '[0-9]' | tr -d ' '"
-    warn: false
-  changed_when: false
-  check_mode: false
+    cmd: "lsblk -o NAME,FSTYPE -dsn | egrep xvdh | egrep -v '[0-9]' | tr -d ' '"
   register: hdd
 
 - name: Show if the disk is formatted
   debug:
-    msg: hdd.stdout
+    msg: "{{ hdd.stdout }}"
 
 - name: Format hdd
   become: true
-  ansible.builtin.filesystem:
+  community.general.filesystem:
     fstype: ext4
-    dev: /dev/sdh
-  when: disk.stdout | length > 0
+    dev: /dev/xvdh
+  when: hdd.stdout != ""
 
 - name: Create mount directory
   become: true
@@ -33,10 +22,41 @@
     state: directory
     mode: '0755'
 
+- name: Check if disk exists in fstab
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    state: absent
+    regexp: "^/dev/xvdh"
+  check_mode: true
+  changed_when: false
+  register: check_disk_exists
+
+- name: Register disk in fstab
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    backup: yes
+    state: present
+    line: "/dev/xvdh /data ext4 defaults 0 0"
+  when: check_disk_exists.found == 0
+
 - name: Mount data disk
   become: true
   ansible.builtin.mount:
     path: /data
-    src: /dev/sdh
+    src: /dev/xvdh
     fstype: ext4
     state: mounted
+
+- name: Update apt repositories cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install pip
+  become: true
+  ansible.builtin.apt:
+    state: present
+    pkg:
+      - python3-pip

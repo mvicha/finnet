@@ -1,0 +1,36 @@
+- name: Install docker-compose requirements
+  become: true
+  ansible.builtin.pip:
+    name: {{ item }}
+  with_items:
+    - docker
+    - docker-composer-v2
+    - docker-compose
+
+- name: Make sure www directory exists
+  become: true
+  ansible.builtin.file:
+    dest: /var/www/flask
+    state: directory
+    mode: '0755'
+
+- name: Clone docker-compose project
+  become: true
+  ansible.builtin.git:
+    repo: 'https://github.com/mvicha/finnet.git'
+    dest: /var/www/flask
+    version: compose
+
+- name: Copy .env file
+  become: true
+  ansible.builtin.template:
+    src: env.j2
+    dest: /var/www/flask/.env
+    mode: '0644'
+
+- name: Start service
+  ansible.builtin.shell:
+    cmd: docker compose up
+  args:
+    chdir: /var/www/flask
+    build: true

@@ -30,15 +30,3 @@ variable "instances" {
     })
   )
 }
-
-variable "ansible" {
-  type = map(object({
-    env       = string
-    Tunning   = bool
-    debug     = bool
-    exturl    = string
-    client    = string
-    intmode   = string
-    device_id = number
-  }))
-}
