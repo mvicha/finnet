@@ -39,4 +39,5 @@ resource "aws_s3_object" "index_file" {
   bucket        = aws_s3_bucket.mod_bucket.id
   key           = "${var.service_name}/index.html"
   content       = templatefile("${path.module}/content/index.tpl", local.index_vars)
-  content_type  = "text/html"}
+  content_type  = "text/html"
+}
