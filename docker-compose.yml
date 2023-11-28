@@ -26,6 +26,8 @@ services:
   webapp:
     image: mvilla/finnetflask:latest
     restart: unless-stopped
+    environment:
+      - env=${env}
     ports:
       - "80:5000"
     volumes:
