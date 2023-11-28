@@ -1,5 +1,5 @@
 output "distribution_domain_name" {
-  value = aws_cloudfront_distribution.mod_cloudfront_distribution.domain_name
+  value = "http://${aws_cloudfront_distribution.mod_cloudfront_distribution.domain_name}"
   description = "Distribution Name"
 }
 
