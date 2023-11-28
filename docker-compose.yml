@@ -2,12 +2,20 @@ services:
   webapi:
     image: mvilla/finnetflask:latest
     restart: unless-stopped
+    environment:
+      - env=${env}
+      - Tunning=${Tunning}
+      - debug=${debug}
+      - exturl=${exturl}
+      - client=${client}
+      - intmode=${intmode}
+      - device_id=${device_id}
     volumes:
       - "./webapi:/var/www/flask"
     networks:
       internal-network:
         aliases:
-          - dev
+          - ${env}
     deploy:
       resources:
         limits:
