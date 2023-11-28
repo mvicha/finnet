@@ -1,0 +1,3 @@
+- name: Reset Connection
+  meta: reset_connection
+  ignore_errors: True

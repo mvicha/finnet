@@ -1,0 +1,42 @@
+# - name: Make sure data disk is available
+#   become: true
+#   ansible.builtin.filesystem:
+#     fstype: ext4
+#     dev: /dev/sdh
+#     force: false
+#     state: present
+
+- name: Find if disk is formatted
+  become: true
+  ansible.builtin.shell:
+    cmd: "lsblk -o NAME,FSTYPE -dsn | egrep -v '[0-9]' | tr -d ' '"
+    warn: false
+  changed_when: false
+  check_mode: false
+  register: hdd
+
+- name: Show if the disk is formatted
+  debug:
+    msg: hdd.stdout
+
+- name: Format hdd
+  become: true
+  ansible.builtin.filesystem:
+    fstype: ext4
+    dev: /dev/sdh
+  when: disk.stdout | length > 0
+
+- name: Create mount directory
+  become: true
+  ansible.builtin.file:
+    path: /data
+    state: directory
+    mode: '0755'
+
+- name: Mount data disk
+  become: true
+  ansible.builtin.mount:
+    path: /data
+    src: /dev/sdh
+    fstype: ext4
+    state: mounted

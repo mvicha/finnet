@@ -1,0 +1,7 @@
+env:       "staging"
+Tunning:   true
+debug:     false
+exturl:    "https://staging/approve"
+client:    "staging_client_external"
+intmode:   "API"
+device_id: 32443532

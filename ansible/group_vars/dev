@@ -1,0 +1,7 @@
+env:       "dev"
+Tunning:   true
+debug:     true
+exturl:    "https://dev/approve"
+client:    "dev_client_external"
+intmode:   "API"
+device_id: 2346456
