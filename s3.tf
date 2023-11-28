@@ -39,7 +39,7 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
 }
 
 module "s3" {
-  source = "git::https://gitlab.mvilla.org/mvicha/tempfinnet?ref=s3"
+  source = "git::https://github.com/mvicha/finnet.git?ref=s3"
 
   for_each = var.buckets
 

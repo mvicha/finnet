@@ -7,7 +7,7 @@ resource "aws_cloudfront_origin_access_control" "cloudfront_oac" {
 }
 
 module "cloudfront" {
-  source = "git::https://gitlab.mvilla.org/mvicha/tempfinnet?ref=cloudfront"
+  source = "git::https://github.com/mvicha/finnet.git?ref=cloudfront"
 
   environment         = var.env_environment
   logging_bucket      = aws_s3_bucket.s3_cloudfront_logs.id
