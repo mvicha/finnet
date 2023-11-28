@@ -111,9 +111,9 @@ $ terraform plan -var-file=env/dev.tfvars -out ansible.out
 If everything looks correct:
 $ terraform apply ansible.out
 
-After the execution you should see the lb_dev and lb_staging URLs along with some other information. Copy the URLs and paste them in a browser to see the results.
+After the execution you should see the lb_dev and lb_staging URLs along with some other information. For security purposes the ssh_key is not displayed, but you will get it saved in the directory as ssh_key. You can save it to use it in the future to connect to any of the 3 deployed hosts.
 
-You should see a site with the information required jumping between the 3 different containers running in the dev or staging hosts
+Copy the LoadBalancers URLs and paste them in a browser to see the results. You should see a site with the information required jumping between the 3 different containers running in the dev or staging hosts
 
 Here finishes the second part of the assignment.
 
