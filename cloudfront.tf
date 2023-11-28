@@ -1,5 +1,5 @@
 resource "aws_cloudfront_function" "serve_index_in_subdirs" {
-  name = "${var.environment}ServeIndexInSubdirs"
+  name    = "${var.environment}ServeIndexInSubdirs"
   runtime = "cloudfront-js-1.0"
   comment = "This function allows index.html to be displayed when url ends with /"
   publish = "true"
