@@ -115,6 +115,17 @@ After the execution you should see the lb_dev and lb_staging URLs along with som
 
 Copy the LoadBalancers URLs and paste them in a browser to see the results. You should see a site with the information required jumping between the 3 different containers running in the dev or staging hosts
 
+The output will look similar to this:
+This is 2b59abed50a7 host in dev environment
+
+Settings are:
+Tunning: True
+Debug: True
+External URL https://dev/approve:
+Client: dev_client_external
+Interaction Mode: API
+Device ID: 2346456
+
 Here finishes the second part of the assignment.
 
 I hope you have enjoyed this solution. If you have any questions, suggestions or concerns, don't hesitate to contact me at mvicha@gmail.com
