@@ -1,0 +1,36 @@
+services:
+  webapi:
+    image: flask
+    restart: unless-stopped
+    resources:
+      limits:
+        cpus: '0.3'
+        memory: 1G
+    volumes:
+      - "./webapi:/var/www/flask"
+    networks:
+      internal-network:
+        aliases:
+          - dev
+    deploy:
+      mode: replicated
+      replicas: 3
+  webapp:
+    image: flask
+    restart: unless-stopped
+    ports:
+      - "80:5000"
+    volumes:
+      - "./webapp:/var/www/flask"
+      - "/data:/data"
+    networks:
+      - internal-network
+      - external-network
+    deploy:
+      mode: replicated
+      replicas: 1
+
+networks:
+  internal-network:
+    internal: true
+  external-network:
