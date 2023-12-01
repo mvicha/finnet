@@ -22,6 +22,9 @@ variable "kms_arn" {
   default     = ""
 }
 
+# Define local variables for:
+# modvar_bucket (Shorten random string to 8 characters, include bucket name and environemnt to identify the bucket easily)
+# index_vars (Used for creating index.html content files)
 locals {
   modvar_bucket = lower("${substr(random_id.s3_random.hex, 0, 8)}-${var.bucket_name}-${var.environment}")
   index_vars = {
