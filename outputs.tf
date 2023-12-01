@@ -1,10 +1,10 @@
 output "distribution_domain_name" {
-  value = "http://${aws_cloudfront_distribution.mod_cloudfront_distribution.domain_name}"
+  value       = "http://${aws_cloudfront_distribution.mod_cloudfront_distribution.domain_name}"
   description = "Distribution Name"
 }
 
 output "distribution_arn" {
-  value = aws_cloudfront_distribution.mod_cloudfront_distribution.arn
+  value       = aws_cloudfront_distribution.mod_cloudfront_distribution.arn
   description = "Distribution arn"
 }
 

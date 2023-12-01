@@ -1,3 +1,4 @@
+# Create CloudFormation function to serve index.html files automatically when not in the root directory
 resource "aws_cloudfront_function" "serve_index_in_subdirs" {
   name    = "${var.environment}ServeIndexInSubdirs"
   runtime = "cloudfront-js-1.0"
@@ -6,6 +7,12 @@ resource "aws_cloudfront_function" "serve_index_in_subdirs" {
   code = file("${path.module}/includes/serve_index.js")
 }
 
+# Create CloudFormation distribution
+# As there are going to be multiple origins in the distribution there are some dynamic sections that are going to allow having multiple entries
+# Notes regarding variables used:
+# domain_name (Obtained in s3 module and passed as variable. Using bucket_regional_domain_name for serving internally)
+# origin_access_control_id (Obtained in the main terraform process and passed as variable)
+# Associate the CloudFormation function to serve index.html files automatically
 resource "aws_cloudfront_distribution" "mod_cloudfront_distribution" {
 
   dynamic "origin" {
