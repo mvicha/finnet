@@ -1,3 +1,4 @@
+# Associate the KMS key created in kms.tf file with the auth, info and customers buckets
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
   for_each = var.buckets
 
@@ -11,6 +12,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption
   }
 }
 
+# Modify the CloudFront_S3_AllowRead.tpf file to allow CloudFront to read data from the S3 buckets
 data "template_file" "cloudfront_s3_read_policy" {
   template = file("${path.module}/policies/CloudFront_S3_AllowRead.tpl")
   for_each = var.buckets
@@ -22,10 +24,7 @@ data "template_file" "cloudfront_s3_read_policy" {
   }
 }
 
-# output "s3_policy" {
-#   value = data.template_file.cloudfront_s3_read_policy.rendered
-# }
-
+# Associate the templated file with S3 to allow CloudFront to read data from S3 buckets
 resource "aws_s3_bucket_policy" "cloudfront_s3_read_only" {
   for_each = var.buckets
   bucket = each.value.bucket_name
