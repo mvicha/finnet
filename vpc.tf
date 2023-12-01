@@ -1,3 +1,4 @@
+# Create VPC whith values defined in variables file env/dev.tfvars
 resource "aws_vpc" "this_vpc" {
   cidr_block           = var.vpc.cidr_block
   enable_dns_hostnames = var.vpc.enable_dns_hostnames
@@ -8,6 +9,7 @@ resource "aws_vpc" "this_vpc" {
   }
 }
 
+# Create a new Internet Gateway for Public network
 resource "aws_internet_gateway" "this_igw" {
   vpc_id = aws_vpc.this_vpc.id
 
@@ -17,6 +19,7 @@ resource "aws_internet_gateway" "this_igw" {
   }
 }
 
+# Create a route table for public network
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this_vpc.id
 
@@ -31,6 +34,7 @@ resource "aws_route_table" "public" {
   }
 }
 
+# Create all the subnets as defined in the variables file in env/dev.tfvars
 resource "aws_subnet" "this_subnet" {
   vpc_id    = aws_vpc.this_vpc.id
   for_each  = var.subnet
@@ -46,6 +50,7 @@ resource "aws_subnet" "this_subnet" {
   depends_on = [ aws_internet_gateway.this_igw ]
 }
 
+# Create a new Elastic IP address for the Nat Gateway
 resource "aws_eip" "this_eip" {
   domain                    = "vpc"
 
@@ -56,6 +61,7 @@ resource "aws_eip" "this_eip" {
   depends_on                = [aws_internet_gateway.this_igw]
 }
 
+# Create a new Nat Gateway and associate the recently created Elastic IP to it
 resource "aws_nat_gateway" "this_ngw" {
   allocation_id = aws_eip.this_eip.id
   subnet_id     = aws_subnet.this_subnet["pub"].id
@@ -70,6 +76,7 @@ resource "aws_nat_gateway" "this_ngw" {
   depends_on = [aws_internet_gateway.this_igw]
 }
 
+# Create a Route Table to go through the Nat Gateway
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this_vpc.id
 
@@ -84,6 +91,7 @@ resource "aws_route_table" "private" {
   }
 }
 
+# Associate the Route Table to the corresponding subnets
 resource "aws_route_table_association" "this_rt_association" {
   for_each = var.subnet
 

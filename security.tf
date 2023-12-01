@@ -1,3 +1,7 @@
+# Create a Security Group which allows:
+# Connections to port 80 from everywhere
+# SSH connections from everywhere
+# Outbound traffic to everywhere
 resource "aws_security_group" "this_sg" {
   name    = "default_sg"
   vpc_id  = aws_vpc.this_vpc.id

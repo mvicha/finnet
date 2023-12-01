@@ -1,3 +1,4 @@
+# Configure Terraform Required Providers
 terraform {
   required_providers {
     aws = {
@@ -19,4 +20,5 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Get current sessions data
 data "aws_caller_identity" "current" {}

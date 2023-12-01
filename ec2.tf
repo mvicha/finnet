@@ -1,12 +1,15 @@
+# Create a private key for creating an ssh key pair to connect to the remote hosts
 resource "tls_private_key" "this_privkey" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
+# Create an SSH key pair for connecting to the remote hosts
 resource "aws_key_pair" "this_kp" {
   key_name   = "ec2kp"
   public_key = tls_private_key.this_privkey.public_key_openssh
 }
+
 
 data "template_file" "ssh_priv_key" {
   template = file("${path.module}/includes/user_data.tpl")
@@ -18,6 +21,7 @@ data "template_file" "ssh_priv_key" {
   }
 }
 
+# Create an ebs volume of 5 Gb for hosts dev and staging to use as persistent volume
 resource "aws_ebs_volume" "this_ebs" {
   for_each = toset(["dev", "staging"])
 
@@ -25,6 +29,8 @@ resource "aws_ebs_volume" "this_ebs" {
   size              = 5
 }
 
+# Create bastion, dev and staging ec2 instances
+# Take variables ami_id and instance_type from env/dev.tfvars instances variable
 resource "aws_instance" "this_instance" {
   for_each = var.instances
 
@@ -41,6 +47,7 @@ resource "aws_instance" "this_instance" {
   }
 }
 
+# Attache previously generated ebs volume to /dev/sdh. When inside the instances, this is going to be named /dev/xvdh
 resource "aws_volume_attachment" "this_attachment" {
   for_each = toset(["dev", "staging"])
 
@@ -49,11 +56,15 @@ resource "aws_volume_attachment" "this_attachment" {
   instance_id = aws_instance.this_instance[each.value].id
 }
 
+# Create a new Elastic IP for Bastion Host
 resource "aws_eip" "bastion_eip" {
   domain    = "vpc"
   instance  = aws_instance.this_instance["bastion"].id
 }
 
+# Create an Application Load Balancer for dev and staging
+# internal is false because the LoadBalancer needs to connect Internet to our Private IPs
+# subnets are public, because the LoadBalancer needs to run facing Internet. There's a route table entry for local traffic for the subnet which is going to connect this subnet to the private one
 resource "aws_alb" "this_alb" {
   for_each = toset(["staging", "dev"])
 
@@ -71,6 +82,7 @@ resource "aws_alb" "this_alb" {
   }
 }
 
+# Create a Target Group to connect port 80 to our Instances
 resource "aws_lb_target_group" "this_tg" {
   for_each = toset(["staging", "dev"])
   name     = "${each.value}-tg"
@@ -79,6 +91,7 @@ resource "aws_lb_target_group" "this_tg" {
   vpc_id   = aws_vpc.this_vpc.id
 }
 
+# Create a Listener for port 80 connections and forward it to the Target Group
 resource "aws_lb_listener" "this_lbl" {
   for_each = toset(["staging", "dev"])
 
@@ -92,6 +105,7 @@ resource "aws_lb_listener" "this_lbl" {
   }
 }
 
+# Associate the Target Group to the instance
 resource "aws_lb_target_group_attachment" "this_tga" {
   for_each = toset(["staging", "dev"])
 
@@ -100,6 +114,7 @@ resource "aws_lb_target_group_attachment" "this_tga" {
   port             = 80
 }
 
+# Write the private SSH key file contents into a local file named ssh_key
 resource "local_file" "ssh_key" {
   content         = tls_private_key.this_privkey.private_key_pem
   filename        = "${path.module}/ssh_key"
