@@ -9,9 +9,11 @@ output "s3_buckets" {
 }
 
 output "cloudfront_distributions" {
-  value = module.cloudfront.*
+  value       = module.cloudfront.*
+  description = "Display CloudFront distribution values"
 }
 
 output "oac" {
-  value = aws_cloudfront_origin_access_control.cloudfront_oac.id
+  value       = aws_cloudfront_origin_access_control.cloudfront_oac.id
+  description = "Display CloudFront Origin Access Control ID"
 }

@@ -1,3 +1,4 @@
+# Create Origin Access Control
 resource "aws_cloudfront_origin_access_control" "cloudfront_oac" {
   name                              = "${var.env_environment}CloudFrontOAC"
   description                       = "OAC Policy for CloudFront"
@@ -6,6 +7,12 @@ resource "aws_cloudfront_origin_access_control" "cloudfront_oac" {
   signing_protocol                  = "sigv4"
 }
 
+# Instantiate CloudFront Module
+# Pass variables:
+# Environment
+# Logging Bucket (Created in s3.tf file)
+# Buckets (Returned from S3 Module output)
+# oac_id (Origin Access Control previously created)
 module "cloudfront" {
   source = "git::https://github.com/mvicha/finnet.git?ref=cloudfront"
 
